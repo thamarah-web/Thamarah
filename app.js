@@ -15,7 +15,7 @@ function catName(i){return tx('c'+i)}
 
 var payM='',cf={cn:'',cp:'',ab:'',aw:'',ap:'',ci:'',cc:''},KS={c:'',ok:null,busy:false},ktm=null,note='',MIN=150,mode='sched',slotKey='',mod=null,cat=0,cart={},qs='',sending=false,CS={c:'',r:null,busy:false},ctm=null;
 var LOGO='logo.png';
-(function(){try{var st=document.createElement('style');st.textContent='.mode{justify-content:center}.mode.off{cursor:default;pointer-events:none;user-select:none}.mode.off b{font-size:15px}.zzp{width:78px;height:62px;margin:-4px 0 2px}.zzp text{font:700 12px sans-serif;fill:#a8786c}.zzp .z1{animation:zz 3s infinite}.zzp .z2{animation:zz 3s 1s infinite}.zzp .z3{animation:zz 3s 2s infinite}.zzp .zb{transform-box:fill-box;transform-origin:center;animation:br 3.4s ease-in-out infinite}@keyframes zz{0%{opacity:0;transform:translateY(5px)}35%{opacity:1}100%{opacity:0;transform:translateY(-7px)}}@keyframes br{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}@media (prefers-reduced-motion:reduce){.zzp *{animation:none!important}}.adr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.adr input{text-align:center;padding:11px 6px;min-width:0}.wa{display:flex;justify-content:center;margin:0 0 14px}.cnote{font-size:12.5px;line-height:1.7;padding:7px 10px;margin:-2px 0 8px;border-radius:10px;text-align:right}.cnote.wait{color:var(--mute,#888)}.cnote.bad{background:#f6e4e6;color:#a52a3a}.tot.sm{font-size:14px;opacity:.85;margin-bottom:4px}.tot.dsc span:last-child{color:#2f7a3a}';document.head.appendChild(st)}catch(e){}})();
+(function(){try{var st=document.createElement('style');st.textContent='.n9{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-weight:700;font-size:1.08em;letter-spacing:0;unicode-bidi:isolate}.mode{justify-content:center}.mode.off{cursor:default;pointer-events:none;user-select:none}.mode.off b{font-size:15px}.zzp{width:78px;height:62px;margin:-4px 0 2px}.zzp text{font:700 12px sans-serif;fill:#a8786c}.zzp .z1{animation:zz 3s infinite}.zzp .z2{animation:zz 3s 1s infinite}.zzp .z3{animation:zz 3s 2s infinite}.zzp .zb{transform-box:fill-box;transform-origin:center;animation:br 3.4s ease-in-out infinite}@keyframes zz{0%{opacity:0;transform:translateY(5px)}35%{opacity:1}100%{opacity:0;transform:translateY(-7px)}}@keyframes br{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}@media (prefers-reduced-motion:reduce){.zzp *{animation:none!important}}.adr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.adr input{text-align:center;padding:11px 6px;min-width:0}.wa{display:flex;justify-content:center;margin:0 0 14px}.cnote{font-size:12.5px;line-height:1.7;padding:7px 10px;margin:-2px 0 8px;border-radius:10px;text-align:right}.cnote.wait{color:var(--mute,#888)}.cnote.bad{background:#f6e4e6;color:#a52a3a}.tot.sm{font-size:14px;opacity:.85;margin-bottom:4px}.tot.dsc span:last-child{color:#2f7a3a}';document.head.appendChild(st)}catch(e){}})();
 
 function per(h){return h<12?'الصبح':h<15?'الظهر':h<18?'العصر':h<21?'المساء':'بالليل'}
 function fh(h){return (h%12||12)+' '+per(h)}
@@ -120,7 +120,7 @@ function render(){
  }
  if(mode==='fast'&&fastClosed()){mode='sched';cat=2}
  h+='<div class="modes">'+[['fast',esc(tx('mf')),esc(tx('mfs'))],['sched',esc(tx('ms')),esc(tx('mss'))]].map(function(m){
-  if(m[0]==='fast'&&fastClosed())return '<div class="mode off" aria-disabled="true">'+SLEEP+'<b>بنفتح '+FAST_FROM+' الصبح</b><small>للتوصيل السريع</small></div>';
+  if(m[0]==='fast'&&fastClosed())return '<div class="mode off" aria-disabled="true">'+SLEEP+'<b>التوصيل السريع</b><small>يبدأ من <span class="n9">'+FAST_FROM+'</span> صباحًا</small></div>';
   return '<button class="mode'+(mode==m[0]?' on':'')+'" data-m="'+m[0]+'"><b>'+m[1]+'</b><small>'+m[2]+'</small></button>'}).join('')+'</div>';
  if(mode==='sched'){var L=slots(),cs=curSlot();h+='<div class="sched"><div class="e">'+esc(tx('eta'))+'</div><div class="t">'+slotLabel(L[0])+'</div><select id="slot">'+L.map(function(s){return '<option value="'+s.k+'"'+(s.k===cs.k?' selected':'')+'>'+slotLabel(s)+'</option>'}).join('')+'</select><small>'+esc(tx('hours'))+'</small></div>'}
  var av=mode!=='fast'?[2,0,1]:[0,1];if(av.indexOf(cat)<0)cat=av[0];var nt=note;note='';
@@ -212,7 +212,7 @@ function checkStatus(k,tries){
 function send(){
  if(sending)return;
  readForm();
- if(mode==='fast'&&fastClosed()){mode='sched';cat=2;saveCart();sheet();showMsg('التوصيل السريع بيفتح '+FAST_FROM+' الصبح، اختار ميعاد التوصيل وأكد طلبك');return}
+ if(mode==='fast'&&fastClosed()){mode='sched';cat=2;saveCart();sheet();showMsg('التوصيل السريع يبدأ من <span class="n9">'+FAST_FROM+'</span> صباحًا، اختار ميعاد التوصيل وأكد طلبك',true);return}
  if(total()<MIN){showMsg('الحد الأدنى للطلب '+MIN+' ج');return}
  if(both()){showMsg('لا يمكن اختيار عميل جديد وقديم في نفس الوقت');return}
  var kc=kcode();
