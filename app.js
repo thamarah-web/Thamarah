@@ -15,7 +15,7 @@ function catName(i){return tx('c'+i)}
 
 var payM='',cf={cn:'',cp:'',ab:'',aw:'',ap:'',ci:'',cc:''},KS={c:'',ok:null,busy:false},ktm=null,note='',MIN=150,mode='fast',slotKey='',mod=null,cat=0,cart={},qs='',sending=false,CS={c:'',r:null,busy:false},ctm=null;
 var LOGO='logo.png';
-(function(){try{var st=document.createElement('style');st.textContent='.adr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.adr input{text-align:center;padding:11px 6px;min-width:0}.wa{display:flex;align-items:center;justify-content:center;gap:8px;margin:-4px 0 14px;padding:10px;color:var(--ink,#333);text-decoration:none;font-size:15px;border-radius:14px}.wa svg{width:26px;height:26px;flex:none}.cnote{font-size:12.5px;line-height:1.7;padding:7px 10px;margin:-2px 0 8px;border-radius:10px;text-align:right}.cnote.wait{color:var(--mute,#888)}.cnote.bad{background:#f6e4e6;color:#a52a3a}.tot.sm{font-size:14px;opacity:.85;margin-bottom:4px}.tot.dsc span:last-child{color:#2f7a3a}';document.head.appendChild(st)}catch(e){}})();
+(function(){try{var st=document.createElement('style');st.textContent='.adr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.adr input{text-align:center;padding:11px 6px;min-width:0}.wa{display:flex;justify-content:center;margin:0 0 14px}.cnote{font-size:12.5px;line-height:1.7;padding:7px 10px;margin:-2px 0 8px;border-radius:10px;text-align:right}.cnote.wait{color:var(--mute,#888)}.cnote.bad{background:#f6e4e6;color:#a52a3a}.tot.sm{font-size:14px;opacity:.85;margin-bottom:4px}.tot.dsc span:last-child{color:#2f7a3a}';document.head.appendChild(st)}catch(e){}})();
 
 function per(h){return h<12?'الصبح':h<15?'الظهر':h<18?'العصر':h<21?'المساء':'بالليل'}
 function fh(h){return (h%12||12)+' '+per(h)}
@@ -134,7 +134,7 @@ function payHtml(){
  var s=S.site||{},h='<div class="cs"><div class="cst">طريقة الدفع</div><div class="pm"><button class="pmb'+(payM==='online'?' on':'')+'" data-pm="online">انستاباي</button><button class="pmb'+(payM==='cash'?' on':'')+'" data-pm="cash">كاش</button></div>';
  if(payM==='online')h+='<div class="pnote" style="margin-top:10px">برجاء ارسال إيصال التحويل على الواتساب</div>';
  h+='</div>';
- if(s.phone)h+='<a class="wa" href="'+esc(waLink(s.phone))+'" target="_blank" rel="noopener">'+ICO.wa+'<span>اضغط للتواصل مع خدمة العملاء</span></a>';
+ if(s.phone)h+='<div class="wa"><a class="ci" href="'+esc(waLink(s.phone))+'" target="_blank" rel="noopener">'+ICO.wa+'<span>اضغط للتواصل مع خدمة العملاء</span></a></div>';
  return h}
 function both(){return !!en(cf.cc).trim()&&!!(cf.cn.trim()||cf.cp.trim()||cf.ab.trim()||cf.aw.trim()||cf.ap.trim()||cf.ci.trim())}
 function adrOk(){return !!(cf.ab.trim()&&cf.aw.trim()&&cf.ap.trim())}
