@@ -13,15 +13,21 @@ var DEF={tag:'سرعة . جودة . سعر',badge:'توصيل سريع أو بم
 function tx(k){var v=S.site&&S.site[k];return (v===undefined||v===null||v==='')?DEF[k]:v}
 function catName(i){return tx('c'+i)}
 
-var payM='',cf={cn:'',cp:'',ab:'',aw:'',ap:'',ci:'',cc:''},KS={c:'',ok:null,busy:false},ktm=null,note='',MIN=150,mode='fast',slotKey='',mod=null,cat=0,cart={},qs='',sending=false,CS={c:'',r:null,busy:false},ctm=null;
+var payM='',cf={cn:'',cp:'',ab:'',aw:'',ap:'',ci:'',cc:''},KS={c:'',ok:null,busy:false},ktm=null,note='',MIN=150,mode='sched',slotKey='',mod=null,cat=0,cart={},qs='',sending=false,CS={c:'',r:null,busy:false},ctm=null;
 var LOGO='logo.png';
-(function(){try{var st=document.createElement('style');st.textContent='.adr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.adr input{text-align:center;padding:11px 6px;min-width:0}.wa{display:flex;justify-content:center;margin:0 0 14px}.cnote{font-size:12.5px;line-height:1.7;padding:7px 10px;margin:-2px 0 8px;border-radius:10px;text-align:right}.cnote.wait{color:var(--mute,#888)}.cnote.bad{background:#f6e4e6;color:#a52a3a}.tot.sm{font-size:14px;opacity:.85;margin-bottom:4px}.tot.dsc span:last-child{color:#2f7a3a}';document.head.appendChild(st)}catch(e){}})();
+(function(){try{var st=document.createElement('style');st.textContent='.mode{justify-content:center}.mode.off{cursor:default;pointer-events:none;user-select:none}.mode.off b{font-size:15px}.zzp{width:78px;height:62px;margin:-4px 0 2px}.zzp text{font:700 12px sans-serif;fill:#a8786c}.zzp .z1{animation:zz 3s infinite}.zzp .z2{animation:zz 3s 1s infinite}.zzp .z3{animation:zz 3s 2s infinite}.zzp .zb{transform-box:fill-box;transform-origin:center;animation:br 3.4s ease-in-out infinite}@keyframes zz{0%{opacity:0;transform:translateY(5px)}35%{opacity:1}100%{opacity:0;transform:translateY(-7px)}}@keyframes br{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}@media (prefers-reduced-motion:reduce){.zzp *{animation:none!important}}.adr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.adr input{text-align:center;padding:11px 6px;min-width:0}.wa{display:flex;justify-content:center;margin:0 0 14px}.cnote{font-size:12.5px;line-height:1.7;padding:7px 10px;margin:-2px 0 8px;border-radius:10px;text-align:right}.cnote.wait{color:var(--mute,#888)}.cnote.bad{background:#f6e4e6;color:#a52a3a}.tot.sm{font-size:14px;opacity:.85;margin-bottom:4px}.tot.dsc span:last-child{color:#2f7a3a}';document.head.appendChild(st)}catch(e){}})();
 
 function per(h){return h<12?'الصبح':h<15?'الظهر':h<18?'العصر':h<21?'المساء':'بالليل'}
 function fh(h){return (h%12||12)+' '+per(h)}
-function slots(){var d=new Date(),b=d.getHours()+((d.getMinutes()||d.getSeconds())?1:0),e=b+2,day=0;var F=+tx('first')||10,Lh=+tx('last')||21;if(e<F)e=F;if(e>Lh){e=F;day=1}var l=[];for(var t=e;t<=Lh;t++)l.push({k:day+'-'+t,d:day,h:t});return l}
+function cairoNow(){try{var p={};new Intl.DateTimeFormat('en-GB',{timeZone:'Africa/Cairo',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).formatToParts(new Date()).forEach(function(x){p[x.type]=+x.value});return {h:p.hour%24,m:p.minute,s:p.second}}catch(e){var d=new Date();return {h:d.getHours(),m:d.getMinutes(),s:d.getSeconds()}}}
+function slots(){var d=cairoNow(),b=d.h+((d.m||d.s)?1:0),e=b+2,day=0;var F=+tx('first')||10,Lh=+tx('last')||21;if(e<F)e=F;if(e>Lh){e=F;day=1}var l=[];for(var t=e;t<=Lh;t++)l.push({k:day+'-'+t,d:day,h:t});return l}
 function slotLabel(s){return (s.d?'بكرة':'اليوم')+' الساعة '+fh(s.h)}
 function curSlot(){var l=slots();for(var i=0;i<l.length;i++)if(l[i].k===slotKey)return l[i];return l[0]}
+// التوصيل السريع مقفول من 9 بالليل لحد 9 الصبح بتوقيت مصر
+var FAST_FROM=9,FAST_TO=21;
+function cairoHour(){return cairoNow().h}
+function fastClosed(){var h=cairoHour();return h>=FAST_TO||h<FAST_FROM}
+var SLEEP='<svg class="zzp" viewBox="0 0 100 80" aria-hidden="true"><defs><radialGradient id="zzpg" cx="36%" cy="30%" r="75%"><stop offset="0" stop-color="#e2545f"/><stop offset=".55" stop-color="#b92d3a"/><stop offset="1" stop-color="#7c1724"/></radialGradient><linearGradient id="zzlg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#93ba6a"/><stop offset="1" stop-color="#4b7631"/></linearGradient></defs><rect x="8" y="60" width="62" height="13" rx="6.5" fill="#f4e7d8" stroke="#e2cdb6"/><g transform="rotate(-16 40 46)"><g class="zb"><path d="M33 25C20 20 13 9 17 3c11 2 18 11 16 22z" fill="url(#zzlg)"/><path d="M37 24c0-11 6-19 13-21 2 9-4 17-13 21z" fill="url(#zzlg)"/><path d="M25 10c3 5 6 9 8 14M43 9c-2 5-4 10-6 15" stroke="#3f6328" stroke-width=".8" fill="none" opacity=".6"/><circle cx="40" cy="46" r="21" fill="url(#zzpg)"/><path d="M47 28l2-9 3 6 3-7 1 7 6-4-3 8z" fill="#9a2230"/><ellipse cx="31" cy="36" rx="6.5" ry="3.5" fill="#fff" opacity=".28" transform="rotate(-32 31 36)"/><path d="M29 47q3.6 3.2 7.2 0M43 47q3.6 3.2 7.2 0" fill="none" stroke="#fff4ec" stroke-width="2.1" stroke-linecap="round"/><ellipse cx="28" cy="53" rx="3.2" ry="1.9" fill="#ff9aa8" opacity=".6"/><ellipse cx="52" cy="53" rx="3.2" ry="1.9" fill="#ff9aa8" opacity=".6"/><path d="M38 55q2 1.6 4 0" fill="none" stroke="#fff4ec" stroke-width="1.7" stroke-linecap="round"/></g></g><text class="z1" x="68" y="34">z</text><text class="z2" x="77" y="23">z</text><text class="z3" x="86" y="12">Z</text></svg>';
 function dlText(){return mode==='sched'?'توصيل بموعد: '+slotLabel(curSlot()):'توصيل سريع ('+tx('mfs')+')'}
 function dlShort(){return mode==='sched'?'موعد: '+slotLabel(curSlot()):'سريع'}
 
@@ -106,13 +112,16 @@ function contactHtml(){
 
 function render(){
  document.body.style.overflow='';MIN=+tx('min')||150;
- var h='<header><img class="logo" src="'+LOGO+'" alt="ثمرة"><div class="orn"></div><div class="tag">'+esc(tx('tag'))+'</div><div class="badge">'+esc(tx('badge'))+'</div>'+(S.site.updated?'<div class="upd">أسعار '+esc(en(S.site.updated))+'</div>':'')+'</header>';
+ var h='<header><img class="logo" src="'+LOGO+'" alt="ثمرة"><div class="orn"></div><div class="tag">'+esc(tx('tag'))+'</div><div class="badge">'+esc(tx('badge'))+'</div>'+'<div class="upd">للحي التاسع ودار مصر</div></header>';
  if(!S.loaded){
   h+=S.error?'<div class="empty"><div style="font-size:34px">😕</div>'+esc(S.error)+'<br><button class="btn" id="retry" style="margin-top:14px">حاول تاني</button>'+(S.site.phone?'<br><a class="btn ghost" style="margin-top:10px;display:inline-block;text-decoration:none" href="'+esc(waLink(S.site.phone))+'" target="_blank" rel="noopener">اطلب على الواتساب</a>':'')+'</div>'
    :'<div class="grid">'+Array(9).join('<div class="card sk"><div class="row"><div class="img"></div><div class="skl"></div><div class="skl s"></div></div></div>')+'</div>';
   root.innerHTML=h;return;
  }
- h+='<div class="modes">'+[['fast',esc(tx('mf')),esc(tx('mfs'))],['sched',esc(tx('ms')),esc(tx('mss'))]].map(function(m){return '<button class="mode'+(mode==m[0]?' on':'')+'" data-m="'+m[0]+'"><b>'+m[1]+'</b><small>'+m[2]+'</small></button>'}).join('')+'</div>';
+ if(mode==='fast'&&fastClosed()){mode='sched';cat=2}
+ h+='<div class="modes">'+[['fast',esc(tx('mf')),esc(tx('mfs'))],['sched',esc(tx('ms')),esc(tx('mss'))]].map(function(m){
+  if(m[0]==='fast'&&fastClosed())return '<div class="mode off" aria-disabled="true">'+SLEEP+'<b>بنفتح '+FAST_FROM+' الصبح</b><small>للتوصيل السريع</small></div>';
+  return '<button class="mode'+(mode==m[0]?' on':'')+'" data-m="'+m[0]+'"><b>'+m[1]+'</b><small>'+m[2]+'</small></button>'}).join('')+'</div>';
  if(mode==='sched'){var L=slots(),cs=curSlot();h+='<div class="sched"><div class="e">'+esc(tx('eta'))+'</div><div class="t">'+slotLabel(L[0])+'</div><select id="slot">'+L.map(function(s){return '<option value="'+s.k+'"'+(s.k===cs.k?' selected':'')+'>'+slotLabel(s)+'</option>'}).join('')+'</select><small>'+esc(tx('hours'))+'</small></div>'}
  var av=mode!=='fast'?[2,0,1]:[0,1];if(av.indexOf(cat)<0)cat=av[0];var nt=note;note='';
  if(nt)h+='<div class="warn'+(nt.charAt(0)==='✓'?' ok':'')+'">'+esc(nt)+'</div>';
@@ -203,6 +212,7 @@ function checkStatus(k,tries){
 function send(){
  if(sending)return;
  readForm();
+ if(mode==='fast'&&fastClosed()){mode='sched';cat=2;saveCart();sheet();showMsg('التوصيل السريع بيفتح '+FAST_FROM+' الصبح، اختار ميعاد التوصيل وأكد طلبك');return}
  if(total()<MIN){showMsg('الحد الأدنى للطلب '+MIN+' ج');return}
  if(both()){showMsg('لا يمكن اختيار عميل جديد وقديم في نفس الوقت');return}
  var kc=kcode();
@@ -284,8 +294,11 @@ root.addEventListener('change',function(e){
 });
 document.addEventListener('visibilitychange',function(){if(!document.hidden&&Date.now()-S.ts>120000&&!document.querySelector('.sheet.show')&&!mod)loadCatalog().then(render)});
 
+var wasClosed=fastClosed();
+setInterval(function(){var c=fastClosed();if(c===wasClosed)return;wasClosed=c;if(c&&mode==='fast'){mode='sched';cat=2;saveCart()}if(!document.querySelector('.sheet.show')&&!mod)render()},60000);
 (function init(){
- var c=ls(ST.cart);if(c&&c.cart){cart=c.cart;if(c.mode==='sched'){mode='sched';cat=2}}
+ var c=ls(ST.cart);if(c&&c.cart)cart=c.cart;
+ mode='sched';cat=2; // الموقع بيفتح دايماً على التوصيل بموعد
  var cached=ls(ST.cat);if(cached&&cached.ok)apply(cached);
  render();
  loadCatalog().then(function(){if(!document.querySelector('.sheet.show')&&!mod)render()});
